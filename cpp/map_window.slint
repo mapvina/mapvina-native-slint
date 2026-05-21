@@ -1,0 +1,82 @@
+import { Button, VerticalBox, ComboBox, HorizontalBox, Slider } from "std-widgets.slint";
+import { MMapView, MMapAdapter } from "../src/mapvina.slint";
+
+export { MMapAdapter }
+
+// Re-export Size for C++ backend to read map dimensions
+export struct Size {
+    width: length,
+    height: length,
+}
+
+export component MapWindow inherits Window {
+    preferred-width: 800px;
+    preferred-height: 600px;
+
+    // Expose map area size for C++ backend initialization/resize
+    out property<Size> map-size: { width: map.width, height: map.height };
+    callback map-size-changed;
+    changed map-size => { map-size-changed(); }
+
+    property <[string]> style-urls: [
+        "https://maps.mapvina.com/styles/v1/streets.json?key=public_key",
+        "https://tile.openstreetmap.jp/styles/osm-bright/style.json",
+    ];
+
+    VerticalBox {
+        HorizontalBox {
+            ComboBox {
+                model: root.style-urls;
+                selected(url) => {
+                    map.style-url = url;
+                }
+            }
+            Button {
+                text: "Paris";
+                clicked => { map.fly-to(48.8566, 2.3522, 10); }
+            }
+            Button {
+                text: "New York";
+                clicked => { map.fly-to(40.7128, -74.0060, 10); }
+            }
+            Button {
+                text: "Tokyo";
+                clicked => { map.fly-to(35.6895, 139.6917, 10); }
+            }
+            Text {
+                text: "Pitch:";
+                vertical-alignment: center;
+            }
+            Slider {
+                minimum: 0;
+                maximum: 100;
+                value: 0;
+                changed value => {
+                    map.set-pitch(self.value / 100 * 60);
+                }
+            }
+            Text {
+                text: "Bearing:";
+                vertical-alignment: center;
+            }
+            Slider {
+                minimum: 0;
+                maximum: 100;
+                value: 0;
+                changed value => {
+                    map.set-bearing(self.value / 100 * 360);
+                }
+            }
+            Text {
+                text: "Zoom: " + round(map.current-zoom);
+                vertical-alignment: center;
+            }
+        }
+        map := MMapView {
+            style-url: "https://maps.mapvina.com/styles/v1/streets.json?key=public_key";
+            center-lat: 0;
+            center-lon: 0;
+            zoom: 1;
+        }
+    }
+}

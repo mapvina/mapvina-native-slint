@@ -1,0 +1,44 @@
+# CMake
+!docs/build
+build/
+build-*/
+build-ninja/
+target/
+
+dumps/
+logs/
+tmp/
+
+.cache
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+.DS_Store
+
+# Binaries
+*.exe
+*.out
+*.so
+*.a
+*.dll
+
+# IDEs and editors
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*~
+
+# Other
+vendor/
+*.log
+
+cache.sqlite
+cache.sqlite-journal
+test_cache.sqlite
+maplibre_database.sqlite
